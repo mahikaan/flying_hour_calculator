@@ -4,94 +4,224 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pigeon Flying Hours Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
+            background-color: #f0f2f5;
+            color: var(--dark-color);
+            line-height: 1.6;
             padding: 20px;
-            background-color: #f5f5f5;
         }
+        
         .container {
+            max-width: 100%;
+            margin: 0 auto;
             background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
         }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+            }
+        }
+        
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 2rem;
         }
+        
+        p {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
         .input-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
         }
-        input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        
+        @media (min-width: 768px) {
+            .input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
             flex: 1;
         }
+        
+        .input-field label {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
         button {
-            padding: 8px 15px;
-            background-color: #3498db;
-            color: white;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
             border: none;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        button:hover {
-            background-color: #2980b9;
+        
+        button i {
+            font-size: 1rem;
         }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d90166;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .btn-success:hover {
+            background-color: #3a97d4;
+            transform: translateY(-2px);
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 25px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
+        
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .summary {
-            margin-top: 20px;
             padding: 15px;
-            background-color: #e8f4fb;
-            border-radius: 4px;
-            font-weight: bold;
+            text-align: left;
+            border-bottom: 1px solid #eee;
         }
-        .delete-btn {
-            background-color: #e74c3c;
-            margin-left: 10px;
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
         }
-        .delete-btn:hover {
-            background-color: #c0392b;
+        
+        tr:hover {
+            background-color: #f5f5f5;
         }
-        .time-label {
-            min-width: 80px;
+        
+        .summary {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.2rem;
+            box-shadow: var(--box-shadow);
         }
-        .export-btn {
-            background-color: #27ae60;
-            margin-top: 20px;
-        }
-        .export-btn:hover {
-            background-color: #219653;
-        }
+        
         .button-group {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 15px;
+            margin-top: 25px;
         }
+        
+        @media (max-width: 767px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group button {
+                width: 100%;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+        
         @media print {
             body * {
                 visibility: hidden;
@@ -109,21 +239,85 @@
                 display: none;
             }
         }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #aaa;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+        
+        .time-picker {
+            position: relative;
+        }
+        
+        .time-picker input {
+            cursor: pointer;
+        }
+        
+        .time-picker i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            pointer-events: none;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .header i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-right: 15px;
+        }
+    </style>
     </style>
 </head>
 <body>
     <div class="container print-content">
-        <h1>Pigeon Flying Hours Calculator</h1>
-      
-        
-        <div class="input-group no-print">
-            <input type="text" id="pigeonName" placeholder="Pigeon Name">
-            <span class="time-label">Landing time:</span>
-            <input type="time" id="landingTime">
-            <button id="addPigeon">Add Pigeon</button>
+        <div class="header">
+            <i class="fas fa-dove"></i>
+            <h1>Pigeon Flying Hours Calculator</h1>
         </div>
         
-        <table id="pigeonsTable">
+        <div class="input-group no-print">
+            <div class="input-field">
+                <label for="pigeonName">Pigeon Name</label>
+                <input type="text" id="pigeonName" placeholder="Enter pigeon name">
+            </div>
+            
+            <div class="input-field time-picker">
+                <label for="landingTime">Landing Time</label>
+                <input type="time" id="landingTime">
+                <i class="fas fa-clock"></i>
+            </div>
+            
+            <button id="addPigeon" class="btn-primary">
+                <i class="fas fa-plus"></i> Add Pigeon
+            </button>
+        </div>
+        
+        <div id="emptyState" class="empty-state">
+            <i class="fas fa-feather"></i>
+            <p>No pigeons added yet. Add your first pigeon to get started!</p>
+        </div>
+        
+        <table id="pigeonsTable" style="display: none;">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -137,12 +331,14 @@
             </tbody>
         </table>
         
-        <div class="summary" id="summary">
+        <div class="summary" id="summary" style="display: none;">
             Total Flight Hours: 0
         </div>
         
         <div class="button-group no-print">
-            <button id="exportPDF" class="export-btn">Export as PDF</button>
+            <button id="exportPDF" class="btn-success">
+                <i class="fas fa-file-pdf"></i> Export as PDF
+            </button>
         </div>
     </div>
 
@@ -151,18 +347,31 @@
             // Initialize pigeons array
             let pigeons = [];
             
-            // Add event listener to the add button
-            document.getElementById('addPigeon').addEventListener('click', addPigeon);
+            // Get DOM elements
+            const pigeonNameInput = document.getElementById('pigeonName');
+            const landingTimeInput = document.getElementById('landingTime');
+            const addPigeonBtn = document.getElementById('addPigeon');
+            const exportPDFBtn = document.getElementById('exportPDF');
+            const pigeonsTable = document.getElementById('pigeonsTable');
+            const pigeonsData = document.getElementById('pigeonsData');
+            const summaryElement = document.getElementById('summary');
+            const emptyState = document.getElementById('emptyState');
             
-            // Add event listener to the export PDF button
-            document.getElementById('exportPDF').addEventListener('click', exportToPDF);
+            // Set current time as default for landing time input
+            const now = new Date();
+            landingTimeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             
+            // Add event listeners
+            addPigeonBtn.addEventListener('click', addPigeon);
+            exportPDFBtn.addEventListener('click', exportToPDF);
+            
+            // Add pigeon function
             function addPigeon() {
-                const name = document.getElementById('pigeonName').value.trim();
-                const landingTime = document.getElementById('landingTime').value;
+                const name = pigeonNameInput.value.trim();
+                const landingTime = landingTimeInput.value;
                 
                 if (!name || !landingTime) {
-                    alert('Please enter pigeon name and landing time');
+                    showNotification('Please enter pigeon name and landing time', 'error');
                     return;
                 }
                 
@@ -189,24 +398,8 @@
                 let flightTimeInHours = (landingDateTime - startDateTime) / (1000 * 60 * 60);
                 
                 // Format time in 12-hour format with AM/PM
-                //const formattedTime = formatTimeAMPM(landingDateTime);
+                const formattedTime = formatTimeAMPM(landingDateTime);
                 
-                function formatTimeAMPM(dateString) {
-                    const date = new Date(dateString);
-                    let hours = date.getHours();
-                    let minutes = date.getMinutes();
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-
-                    hours = hours % 12;
-                    hours = hours ? hours : 12; // the hour '0' should be '12'
-                    minutes = minutes < 10 ? '0' + minutes : minutes;
-
-                    return `${hours}:${minutes} ${ampm}`;
-                }
-
-            // Usage
-            const formattedTime = formatTimeAMPM(landingDateTime);
-
                 // Add the pigeon to the array
                 const pigeon = {
                     name: name,
@@ -216,17 +409,62 @@
                 
                 pigeons.push(pigeon);
                 
-                // Update the table
+                // Update the UI
                 updateTable();
+                showNotification(`${name} added successfully!`, 'success');
                 
                 // Clear the input fields
-                document.getElementById('pigeonName').value = '';
-                document.getElementById('landingTime').value = '';
+                pigeonNameInput.value = '';
                 
                 // Focus back on the name input
-                document.getElementById('pigeonName').focus();
+                pigeonNameInput.focus();
             }
             
+            // Show notification function
+            function showNotification(message, type = 'success') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.padding = '12px 20px';
+                notification.style.borderRadius = '8px';
+                notification.style.color = 'white';
+                notification.style.zIndex = '1000';
+                notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+                notification.style.transition = 'all 0.3s ease-in-out';
+                
+                // Set colors based on type
+                if (type === 'error') {
+                    notification.style.backgroundColor = '#f72585';
+                } else {
+                    notification.style.backgroundColor = '#4cc9f0';
+                }
+                
+                // Add to body
+                document.body.appendChild(notification);
+                
+                // Show with animation
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateY(0)';
+                }, 10);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Format time to AM/PM format
             function formatTimeAMPM(date) {
                 let hours = date.getHours();
                 let minutes = date.getMinutes();
@@ -239,9 +477,22 @@
                 return hours + ':' + minutes + ' ' + ampm;
             }
             
+            // Update table function
             function updateTable() {
-                const tableBody = document.getElementById('pigeonsData');
-                tableBody.innerHTML = '';
+                if (pigeons.length === 0) {
+                    emptyState.style.display = 'block';
+                    pigeonsTable.style.display = 'none';
+                    summaryElement.style.display = 'none';
+                    return;
+                }
+                
+                // Show table and summary, hide empty state
+                emptyState.style.display = 'none';
+                pigeonsTable.style.display = 'table';
+                summaryElement.style.display = 'block';
+                
+                // Clear table
+                pigeonsData.innerHTML = '';
                 
                 let totalHours = 0;
                 
@@ -259,18 +510,24 @@
                         <td>${pigeon.name}</td>
                         <td>${pigeon.landingTime}</td>
                         <td>${flightHoursFormatted}</td>
-                        <td class="no-print"><button class="delete-btn" data-index="${index}">Delete</button></td>
+                        <td class="no-print">
+                            <button class="btn-danger delete-btn" data-index="${index}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
                     `;
                     
-                    tableBody.appendChild(row);
+                    pigeonsData.appendChild(row);
                 });
                 
                 // Add event listeners to delete buttons
                 document.querySelectorAll('.delete-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         const index = parseInt(this.getAttribute('data-index'));
+                        const removedPigeon = pigeons[index].name;
                         pigeons.splice(index, 1);
                         updateTable();
+                        showNotification(`${removedPigeon} removed successfully!`, 'success');
                     });
                 });
                 
@@ -278,9 +535,8 @@
                 updateSummary(totalHours);
             }
             
+            // Update summary function
             function updateSummary(totalHours) {
-                const summaryElement = document.getElementById('summary');
-                
                 // Format total hours
                 const totalWholeHours = Math.floor(totalHours);
                 const totalMinutes = Math.round((totalHours - totalWholeHours) * 60);
@@ -289,10 +545,11 @@
                 summaryElement.textContent = `Total Flight Hours: ${totalFormatted}`;
             }
             
+            // Export to PDF function
             function exportToPDF() {
-                // First, check if there's data to export
+                // Check if there's data to export
                 if (pigeons.length === 0) {
-                    alert('Please add at least one pigeon before exporting');
+                    showNotification('Please add at least one pigeon before exporting', 'error');
                     return;
                 }
                 
@@ -301,16 +558,34 @@
                 const dateString = today.toLocaleDateString();
                 const dateHeader = document.createElement('div');
                 dateHeader.style.textAlign = 'right';
-                dateHeader.style.marginBottom = '10px';
+                dateHeader.style.marginBottom = '15px';
+                dateHeader.style.marginTop = '15px';
+                dateHeader.style.fontWeight = 'bold';
+                dateHeader.style.color = '#555';
                 dateHeader.textContent = `Date: ${dateString}`;
                 
                 const container = document.querySelector('.container');
-                container.insertBefore(dateHeader, container.firstChild);
+                container.insertBefore(dateHeader, document.querySelector('.header').nextSibling);
                 
                 // Use window.print() for PDF generation
                 window.print();
                 
                 // Remove the date header after printing
+                container.removeChild(dateHeader);
+                
+                showNotification('PDF generated successfully! Save it from your browser', 'success');
+                
+                // Offer to share the PDF (for mobile devices)
+                if (navigator.share) {
+                    showNotification('Use your browser\'s share option to share the PDF', 'success');
+                }
+            }
+            
+            // Initialize empty state
+            updateTable();
+        });
+    </script>
+    <script>
                 container.removeChild(dateHeader);
                 
                 // Offer to share the PDF (for mobile devices)
@@ -319,8 +594,7 @@
                     // Note: This is a simplification; actual PDF sharing would require generating a file
                     alert('Use your browser\'s share option to share the PDF');
                 }
-            }
-        });
+           
     </script>
 </body>
 </html>
