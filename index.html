@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pigeon Flying Hours Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fb;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            margin-left: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .time-label {
+            min-width: 80px;
+        }
+        .export-btn {
+            background-color: #27ae60;
+            margin-top: 20px;
+        }
+        .export-btn:hover {
+            background-color: #219653;
+        }
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-content, .print-content * {
+                visibility: visible;
+            }
+            .print-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container print-content">
+        <h1>Pigeon Flying Hours Calculator</h1>
+      
+        
+        <div class="input-group no-print">
+            <input type="text" id="pigeonName" placeholder="Pigeon Name">
+            <span class="time-label">Landing time:</span>
+            <input type="time" id="landingTime">
+            <button id="addPigeon">Add Pigeon</button>
+        </div>
+        
+        <table id="pigeonsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Landing Time</th>
+                    <th>Flight Hours</th>
+                    <th class="no-print">Action</th>
+                </tr>
+            </thead>
+            <tbody id="pigeonsData">
+                <!-- Pigeon data will be added here -->
+            </tbody>
+        </table>
+        
+        <div class="summary" id="summary">
+            Total Flight Hours: 0
+        </div>
+        
+        <div class="button-group no-print">
+            <button id="exportPDF" class="export-btn">Export as PDF</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize pigeons array
+            let pigeons = [];
+            
+            // Add event listener to the add button
+            document.getElementById('addPigeon').addEventListener('click', addPigeon);
+            
+            // Add event listener to the export PDF button
+            document.getElementById('exportPDF').addEventListener('click', exportToPDF);
+            
+            function addPigeon() {
+                const name = document.getElementById('pigeonName').value.trim();
+                const landingTime = document.getElementById('landingTime').value;
+                
+                if (!name || !landingTime) {
+                    alert('Please enter pigeon name and landing time');
+                    return;
+                }
+                
+                // Create today's date for reference
+                const today = new Date();
+                
+                // Create landing datetime using today's date
+                const landingDateTime = new Date(today);
+                const [hours, minutes] = landingTime.split(':');
+                landingDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                
+                // Create start datetime (7:00 AM today)
+                const startDateTime = new Date(today);
+                startDateTime.setHours(7, 0, 0, 0);
+                
+                // If landing is before 7:00 AM, assume it's the next day flight
+                if (landingDateTime.getHours() < 7 && 
+                    landingDateTime.getHours() >= 0) {
+                    // Add 24 hours to landing time (next day)
+                    landingDateTime.setTime(landingDateTime.getTime() + (24 * 60 * 60 * 1000));
+                }
+                
+                // Calculate flight hours
+                let flightTimeInHours = (landingDateTime - startDateTime) / (1000 * 60 * 60);
+                
+                // Format time in 12-hour format with AM/PM
+                //const formattedTime = formatTimeAMPM(landingDateTime);
+                
+                function formatTimeAMPM(dateString) {
+                    const date = new Date(dateString);
+                    let hours = date.getHours();
+                    let minutes = date.getMinutes();
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+                    return `${hours}:${minutes} ${ampm}`;
+                }
+
+            // Usage
+            const formattedTime = formatTimeAMPM(landingDateTime);
+
+                // Add the pigeon to the array
+                const pigeon = {
+                    name: name,
+                    landingTime: formattedTime,
+                    flightTimeInHours: flightTimeInHours
+                };
+                
+                pigeons.push(pigeon);
+                
+                // Update the table
+                updateTable();
+                
+                // Clear the input fields
+                document.getElementById('pigeonName').value = '';
+                document.getElementById('landingTime').value = '';
+                
+                // Focus back on the name input
+                document.getElementById('pigeonName').focus();
+            }
+            
+            function formatTimeAMPM(date) {
+                let hours = date.getHours();
+                let minutes = date.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                
+                return hours + ':' + minutes + ' ' + ampm;
+            }
+            
+            function updateTable() {
+                const tableBody = document.getElementById('pigeonsData');
+                tableBody.innerHTML = '';
+                
+                let totalHours = 0;
+                
+                pigeons.forEach((pigeon, index) => {
+                    const row = document.createElement('tr');
+                    
+                    // Format flight hours
+                    const wholeHours = Math.floor(pigeon.flightTimeInHours);
+                    const minutes = Math.round((pigeon.flightTimeInHours - wholeHours) * 60);
+                    const flightHoursFormatted = `${wholeHours}.${minutes.toString().padStart(2, '0')}`;
+                    
+                    totalHours += pigeon.flightTimeInHours;
+                    
+                    row.innerHTML = `
+                        <td>${pigeon.name}</td>
+                        <td>${pigeon.landingTime}</td>
+                        <td>${flightHoursFormatted}</td>
+                        <td class="no-print"><button class="delete-btn" data-index="${index}">Delete</button></td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        pigeons.splice(index, 1);
+                        updateTable();
+                    });
+                });
+                
+                // Update summary
+                updateSummary(totalHours);
+            }
+            
+            function updateSummary(totalHours) {
+                const summaryElement = document.getElementById('summary');
+                
+                // Format total hours
+                const totalWholeHours = Math.floor(totalHours);
+                const totalMinutes = Math.round((totalHours - totalWholeHours) * 60);
+                const totalFormatted = `${totalWholeHours}.${totalMinutes.toString().padStart(2, '0')}`;
+                
+                summaryElement.textContent = `Total Flight Hours: ${totalFormatted}`;
+            }
+            
+            function exportToPDF() {
+                // First, check if there's data to export
+                if (pigeons.length === 0) {
+                    alert('Please add at least one pigeon before exporting');
+                    return;
+                }
+                
+                // Add current date to the header for the PDF
+                const today = new Date();
+                const dateString = today.toLocaleDateString();
+                const dateHeader = document.createElement('div');
+                dateHeader.style.textAlign = 'right';
+                dateHeader.style.marginBottom = '10px';
+                dateHeader.textContent = `Date: ${dateString}`;
+                
+                const container = document.querySelector('.container');
+                container.insertBefore(dateHeader, container.firstChild);
+                
+                // Use window.print() for PDF generation
+                window.print();
+                
+                // Remove the date header after printing
+                container.removeChild(dateHeader);
+                
+                // Offer to share the PDF (for mobile devices)
+                if (navigator.share) {
+                    // This will only work on mobile devices with sharing capabilities
+                    // Note: This is a simplification; actual PDF sharing would require generating a file
+                    alert('Use your browser\'s share option to share the PDF');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
