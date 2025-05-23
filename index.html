@@ -3,598 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pigeon Flying Hours Calculator</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Murg Flight Tracker 🐦</title>
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3a0ca3;
-            --success-color: #4cc9f0;
-            --danger-color: #f72585;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
             --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --border-radius: 10px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            --dark-color: #343a40;
+            --background-color: #f4f4f4;
+            --container-bg: #ffffff;
+            --border-color: #dee2e6;
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
+
         body {
-            background-color: #f0f2f5;
-            color: var(--dark-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             line-height: 1.6;
-            padding: 20px;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--dark-color);
         }
-        
+
         .container {
-            max-width: 100%;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 25px;
-            position: relative;
-            overflow: hidden;
+            max-width: 900px;
+            margin: 15px auto;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
-        
-        @media (min-width: 768px) {
-            .container {
-                max-width: 800px;
-            }
-        }
-        
-        h1 {
+
+        h1, h2 {
             text-align: center;
-            color: var(--primary-color);
+            color: var(--dark-color);
             margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 2rem;
         }
-        
-        p {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #555;
-            font-size: 0.95rem;
+        h1 { font-size: 1.8em; }
+        h2 { font-size: 1.4em; }
+
+        #clear-records {
+            display: block;
+            width: fit-content;
+            margin: 20px auto 30px auto;
+            padding: 12px 25px;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.2s ease;
         }
-        
-        .input-group {
+        #clear-records:hover {
+            background-color: #c82333;
+        }
+
+        /* --- New Single Control Panel Styles --- */
+        .single-control-panel {
+            border: 1px solid var(--border-color);
+            padding: 20px 25px;
+            border-radius: 8px;
+            background-color: var(--light-color);
+            margin-bottom: 30px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 25px;
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: var(--border-radius);
         }
-        
-        @media (min-width: 768px) {
-            .input-group {
-                flex-direction: row;
-                align-items: center;
-            }
+
+        .single-control-panel h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3em;
         }
-        
-        .input-field {
+
+        .control-group {
             display: flex;
             flex-direction: column;
-            flex: 1;
         }
-        
-        .input-field label {
+
+        .control-group label {
             margin-bottom: 5px;
-            font-weight: 500;
-            color: #555;
-            font-size: 0.9rem;
+            font-weight: bold;
+            font-size: 0.95em;
         }
-        
-        input {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: all 0.3s;
-            background-color: white;
+
+        .control-group select,
+        .control-group input[type="time"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
         }
-        
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        button {
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.3s;
+
+        .control-buttons {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            gap: 15px;
+            margin-top: 10px;
         }
-        
-        button i {
-            font-size: 1rem;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
+
+        .control-buttons button {
+            flex-grow: 1;
+            padding: 12px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            transition: opacity 0.2s ease, background-color 0.2s ease;
             color: white;
         }
-        
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
+
+        #land-button { background-color: var(--success-color); }
+        #disqualify-button { background-color: var(--warning-color); color: black; }
+        #land-button:hover:not(:disabled) { background-color: #218838; }
+        #disqualify-button:hover:not(:disabled) { background-color: #e0a800; }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
-        
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-            padding: 8px 12px;
-            font-size: 0.85rem;
+        /* --- End New Styles --- */
+
+
+        .table-container {
+            overflow-x: auto; /* Allows horizontal scrolling on small screens */
+            margin-bottom: 30px;
         }
-        
-        .btn-danger:hover {
-            background-color: #d90166;
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-            margin-top: 20px;
-        }
-        
-        .btn-success:hover {
-            background-color: #3a97d4;
-            transform: translateY(-2px);
-        }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            min-width: 600px;
         }
-        
+
         th, td {
-            padding: 15px;
+            border: 1px solid var(--border-color);
+            padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            vertical-align: middle;
         }
-        
+
         th {
             background-color: var(--primary-color);
             color: white;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
-        
-        tr:hover {
-            background-color: #f5f5f5;
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Kept for table readability */
         }
-        
+
         .summary {
-            margin-top: 25px;
-            padding: 20px;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: var(--border-radius);
-            font-weight: 600;
+            background-color: #e9ecef;
+            padding: 25px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .summary h2 { margin-top: 0; }
+        .summary p { font-size: 1.1em; margin: 10px 0; }
+        .summary p strong { color: var(--primary-color); }
+        .summary span {
+            font-weight: bold;
+            background-color: var(--container-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 60px;
             text-align: center;
-            font-size: 1.2rem;
-            box-shadow: var(--box-shadow);
         }
-        
-        .button-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 25px;
+
+        .excluded {
+            text-decoration: line-through;
+            color: var(--secondary-color);
         }
-        
-        @media (max-width: 767px) {
-            .button-group {
-                flex-direction: column;
-            }
-            
-            .button-group button {
-                width: 100%;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
+         .excluded td:first-child { font-style: italic; }
+         .excluded small { text-decoration: none; display: inline-block; color: var(--secondary-color); }
+
+
+        hr {
+            margin-top: 35px;
+            margin-bottom: 35px;
+            border: 0;
+            border-top: 1px solid #eee;
         }
-        
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .print-content, .print-content * {
-                visibility: visible;
-            }
-            .print-content {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-            .no-print {
-                display: none;
-            }
+
+        /* Mobile Friendliness */
+        @media (max-width: 600px) {
+            body { font-size: 14px; }
+            .container { margin: 0; padding: 15px; border-radius: 0; box-shadow: none; }
+            h1 { font-size: 1.6em; }
+            h2 { font-size: 1.3em; }
+
+            .single-control-panel { padding: 15px; }
+            .control-buttons { flex-direction: column; } /* Stack buttons */
+
+            th, td { padding: 8px 10px; }
+            .summary { padding: 20px; }
+            .summary p { font-size: 1em; }
+            #clear-records { width: 70%; padding: 15px; }
         }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 0;
-            color: #aaa;
-        }
-        
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-        
-        .empty-state p {
-            font-size: 1.1rem;
-            margin-bottom: 0;
-        }
-        
-        .time-picker {
-            position: relative;
-        }
-        
-        .time-picker input {
-            cursor: pointer;
-        }
-        
-        .time-picker i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-            pointer-events: none;
-        }
-        
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .header i {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-right: 15px;
-        }
-    </style>
+
     </style>
 </head>
 <body>
-    <div class="container print-content">
-        <div class="header">
-            <i class="fas fa-dove"></i>
-            <h1>Pigeon Flying Hours Calculator</h1>
-        </div>
-        
-        <div class="input-group no-print">
-            <div class="input-field">
-                <label for="pigeonName">Pigeon Name</label>
-                <input type="text" id="pigeonName" placeholder="Enter pigeon name">
+
+    <div class="container">
+        <h1>Murg Flight Tracker 🐦</h1>
+        <button id="clear-records">Clear All Records</button>
+
+        <hr>
+
+        <div id="single-control-panel" class="single-control-panel">
+            <h2>Update Murg Status</h2>
+            <div class="control-group">
+                <label for="murg-select">Select Murg:</label>
+                <select id="murg-select">
+                    </select>
             </div>
-            
-            <div class="input-field time-picker">
-                <label for="landingTime">Landing Time</label>
-                <input type="time" id="landingTime">
-                <i class="fas fa-clock"></i>
+            <div class="control-group">
+                <label for="landing-time-input">Landing Time (HH:MM):</label>
+                <input type="time" id="landing-time-input">
             </div>
-            
-            <button id="addPigeon" class="btn-primary">
-                <i class="fas fa-plus"></i> Add Pigeon
-            </button>
+            <div class="control-buttons">
+                 <button id="land-button">Mark as Landed</button>
+                 <button id="disqualify-button">Mark as Disqualified</button>
+            </div>
         </div>
-        
-        <div id="emptyState" class="empty-state">
-            <i class="fas fa-feather"></i>
-            <p>No pigeons added yet. Add your first pigeon to get started!</p>
+
+        <hr>
+
+        <h2>Flight Records</h2>
+        <div class="table-container">
+            <table id="records-table">
+                <thead>
+                    <tr>
+                        <th>Murg Name</th>
+                        <th>Status</th>
+                        <th>Start Time</th>
+                        <th>Landing Time</th>
+                        <th>Flight Duration (H:M)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
         </div>
-        
-        <table id="pigeonsTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Landing Time</th>
-                    <th>Flight Hours</th>
-                    <th class="no-print">Action</th>
-                </tr>
-            </thead>
-            <tbody id="pigeonsData">
-                <!-- Pigeon data will be added here -->
-            </tbody>
-        </table>
-        
-        <div class="summary" id="summary" style="display: none;">
-            Total Flight Hours: 0
-        </div>
-        
-        <div class="button-group no-print">
-            <button id="exportPDF" class="btn-success">
-                <i class="fas fa-file-pdf"></i> Export as PDF
-            </button>
+
+        <hr>
+
+        <div class="summary">
+            <h2>Summary</h2>
+            <p>Total Landed Murgs Duration: <span id="total-landed">00:00</span></p>
+            <p>Currently Flying Murgs Duration: <span id="total-flying">00:00</span></p>
+            <p><strong>Overall Total Duration (Excluding Shortest):</strong> <span id="overall-total">00:00</span></p>
+            <p><small>Note: The Murg with the shortest flight duration (marked with strikethrough in the table) is excluded from totals.</small></p>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize pigeons array
-            let pigeons = [];
-            
-            // Get DOM elements
-            const pigeonNameInput = document.getElementById('pigeonName');
-            const landingTimeInput = document.getElementById('landingTime');
-            const addPigeonBtn = document.getElementById('addPigeon');
-            const exportPDFBtn = document.getElementById('exportPDF');
-            const pigeonsTable = document.getElementById('pigeonsTable');
-            const pigeonsData = document.getElementById('pigeonsData');
-            const summaryElement = document.getElementById('summary');
-            const emptyState = document.getElementById('emptyState');
-            
-            // Set current time as default for landing time input
-            const now = new Date();
-            landingTimeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            
-            // Add event listeners
-            addPigeonBtn.addEventListener('click', addPigeon);
-            exportPDFBtn.addEventListener('click', exportToPDF);
-            
-            // Add pigeon function
-            function addPigeon() {
-                const name = pigeonNameInput.value.trim();
-                const landingTime = landingTimeInput.value;
-                
-                if (!name || !landingTime) {
-                    showNotification('Please enter pigeon name and landing time', 'error');
-                    return;
-                }
-                
-                // Create today's date for reference
-                const today = new Date();
-                
-                // Create landing datetime using today's date
-                const landingDateTime = new Date(today);
-                const [hours, minutes] = landingTime.split(':');
-                landingDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-                
-                // Create start datetime (7:00 AM today)
-                const startDateTime = new Date(today);
-                startDateTime.setHours(7, 0, 0, 0);
-                
-                // If landing is before 7:00 AM, assume it's the next day flight
-                if (landingDateTime.getHours() < 7 && 
-                    landingDateTime.getHours() >= 0) {
-                    // Add 24 hours to landing time (next day)
-                    landingDateTime.setTime(landingDateTime.getTime() + (24 * 60 * 60 * 1000));
-                }
-                
-                // Calculate flight hours
-                let flightTimeInHours = (landingDateTime - startDateTime) / (1000 * 60 * 60);
-                
-                // Format time in 12-hour format with AM/PM
-                const formattedTime = formatTimeAMPM(landingDateTime);
-                
-                // Add the pigeon to the array
-                const pigeon = {
-                    name: name,
-                    landingTime: formattedTime,
-                    flightTimeInHours: flightTimeInHours
-                };
-                
-                pigeons.push(pigeon);
-                
-                // Update the UI
-                updateTable();
-                showNotification(`${name} added successfully!`, 'success');
-                
-                // Clear the input fields
-                pigeonNameInput.value = '';
-                
-                // Focus back on the name input
-                pigeonNameInput.focus();
+        document.addEventListener('DOMContentLoaded', () => {
+            const murgSelect = document.getElementById('murg-select');
+            const landingTimeInput = document.getElementById('landing-time-input');
+            const landButton = document.getElementById('land-button');
+            const disqualifyButton = document.getElementById('disqualify-button');
+            const recordsTableBody = document.querySelector('#records-table tbody');
+            const totalLandedSpan = document.getElementById('total-landed');
+            const totalFlyingSpan = document.getElementById('total-flying');
+            const overallTotalSpan = document.getElementById('overall-total');
+            const clearButton = document.getElementById('clear-records');
+
+            let murgs = [];
+            let shortestMurgId = null;
+
+            // --- Core Functions (Mostly unchanged) ---
+
+            function getStartTime() {
+                const now = new Date();
+                const start = new Date(now);
+                start.setHours(7, 0, 0, 0);
+                return start;
             }
-            
-            // Show notification function
-            function showNotification(message, type = 'success') {
-                // Create notification element
-                const notification = document.createElement('div');
-                notification.textContent = message;
-                notification.style.position = 'fixed';
-                notification.style.bottom = '20px';
-                notification.style.right = '20px';
-                notification.style.padding = '12px 20px';
-                notification.style.borderRadius = '8px';
-                notification.style.color = 'white';
-                notification.style.zIndex = '1000';
-                notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateY(20px)';
-                notification.style.transition = 'all 0.3s ease-in-out';
-                
-                // Set colors based on type
-                if (type === 'error') {
-                    notification.style.backgroundColor = '#f72585';
+
+            function initializeMurgs() {
+                const storedMurgs = localStorage.getItem('murgData');
+                if (storedMurgs) {
+                    try {
+                        murgs = JSON.parse(storedMurgs).map(murg => ({
+                            ...murg,
+                            startTime: new Date(murg.startTime),
+                            landingTime: murg.landingTime ? new Date(murg.landingTime) : null,
+                        }));
+                         if(murgs.length !== 8) throw new Error("Incorrect Murg count");
+                    } catch (e) {
+                         console.error("Failed to load or parse murg data, resetting.", e);
+                         localStorage.removeItem('murgData');
+                         createDefaultMurgs();
+                    }
                 } else {
-                    notification.style.backgroundColor = '#4cc9f0';
+                    createDefaultMurgs();
                 }
-                
-                // Add to body
-                document.body.appendChild(notification);
-                
-                // Show with animation
-                setTimeout(() => {
-                    notification.style.opacity = '1';
-                    notification.style.transform = 'translateY(0)';
-                }, 10);
-                
-                // Remove after 3 seconds
-                setTimeout(() => {
-                    notification.style.opacity = '0';
-                    notification.style.transform = 'translateY(20px)';
-                    
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 300);
-                }, 3000);
+                updateAll();
             }
-            
-            // Format time to AM/PM format
-            function formatTimeAMPM(date) {
-                let hours = date.getHours();
-                let minutes = date.getMinutes();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                
-                hours = hours % 12;
-                hours = hours ? hours : 12; // the hour '0' should be '12'
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                
-                return hours + ':' + minutes + ' ' + ampm;
+
+            function createDefaultMurgs() {
+                 murgs = [];
+                 const start = getStartTime();
+                 for (let i = 1; i <= 8; i++) {
+                     murgs.push({
+                         id: i,
+                         name: `Murg ${i}`,
+                         status: 'Flying',
+                         startTime: start,
+                         landingTime: null,
+                         durationMinutes: 0
+                     });
+                 }
+                 saveData();
             }
-            
-            // Update table function
-            function updateTable() {
-                if (pigeons.length === 0) {
-                    emptyState.style.display = 'block';
-                    pigeonsTable.style.display = 'none';
-                    summaryElement.style.display = 'none';
-                    return;
+
+            function saveData() {
+                localStorage.setItem('murgData', JSON.stringify(murgs));
+            }
+
+            function clearAll() {
+                if(confirm("Are you sure you want to clear all records? This cannot be undone.")) {
+                    localStorage.removeItem('murgData');
+                    murgs = [];
+                    shortestMurgId = null;
+                    createDefaultMurgs();
+                    updateAll();
                 }
-                
-                // Show table and summary, hide empty state
-                emptyState.style.display = 'none';
-                pigeonsTable.style.display = 'table';
-                summaryElement.style.display = 'block';
-                
-                // Clear table
-                pigeonsData.innerHTML = '';
-                
-                let totalHours = 0;
-                
-                pigeons.forEach((pigeon, index) => {
+            }
+
+             function calculateDuration(murg, currentTime) {
+                if (murg.status === 'Disqualified') return 0;
+                const start = murg.startTime;
+                let end;
+                if (murg.status === 'Landed' && murg.landingTime) end = murg.landingTime;
+                else if (murg.status === 'Flying') end = currentTime;
+                else return 0;
+                if (end < start) return 0;
+                return Math.max(0, Math.round((end - start) / (1000 * 60)));
+            }
+
+            function formatDuration(minutes) {
+                if (minutes <= 0) return '00:00';
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+            }
+
+            function formatTime(date) {
+                if (!date || isNaN(date.getTime())) return '---';
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+
+            function updateMurgStatus(id, newStatus, landingTimeStr = null) {
+                const murg = murgs.find(m => m.id === id);
+                if (!murg) return;
+
+                murg.status = newStatus;
+                murg.landingTime = null;
+
+                if (newStatus === 'Landed' && landingTimeStr) {
+                    const [hour, minute] = landingTimeStr.split(':').map(Number);
+                    if (!isNaN(hour) && !isNaN(minute)) {
+                        const landing = new Date();
+                        landing.setHours(hour, minute, 0, 0);
+                        if (landing < murg.startTime) {
+                            landing.setDate(landing.getDate() + 1);
+                        }
+                        murg.landingTime = landing;
+                    } else {
+                        alert("Invalid time format. Please use HH:MM.");
+                        murg.status = 'Flying'; // Revert
+                        return; // Stop update on error
+                    }
+                } else if (newStatus === 'Disqualified') {
+                    murg.landingTime = null;
+                    murg.durationMinutes = 0;
+                }
+
+                saveData();
+                updateAll(); // Refresh everything
+            }
+
+            function findShortestMurg() {
+                 const relevantMurgs = murgs.filter(m => m.status === 'Landed' || m.status === 'Flying');
+                 if (relevantMurgs.length === 0) return null;
+                 const now = new Date();
+                 relevantMurgs.forEach(m => { m.currentDuration = calculateDuration(m, now); });
+                 let shortest = relevantMurgs[0];
+                 relevantMurgs.forEach(murg => {
+                    if (murg.currentDuration < shortest.currentDuration) shortest = murg;
+                 });
+                 return shortest.id;
+            }
+
+            function updateAll() {
+                const now = new Date();
+                let totalLandedMinutes = 0;
+                let totalFlyingMinutes = 0;
+
+                murgs.forEach(murg => {
+                    murg.durationMinutes = calculateDuration(murg, now);
+                });
+
+                shortestMurgId = findShortestMurg();
+
+                murgs.forEach(murg => {
+                    const isShortest = (murg.id === shortestMurgId);
+                    if (murg.status === 'Landed' && !isShortest) totalLandedMinutes += murg.durationMinutes;
+                    else if (murg.status === 'Flying' && !isShortest) totalFlyingMinutes += murg.durationMinutes;
+                });
+
+                renderMurgSelector(); // Update selector
+                renderTable();
+                renderSummary(totalLandedMinutes, totalFlyingMinutes);
+                updateControlPanelState(); // Update button/input states
+            }
+
+            // --- New/Modified Rendering Functions ---
+
+            function renderMurgSelector() {
+                const currentSelection = murgSelect.value;
+                murgSelect.innerHTML = ''; // Clear old options
+                murgs.forEach(murg => {
+                    const option = document.createElement('option');
+                    option.value = murg.id;
+                    option.textContent = `${murg.name} (${murg.status})`;
+                    murgSelect.appendChild(option);
+                });
+                // Try to restore selection, or select the first one
+                murgSelect.value = currentSelection && murgs.find(m => m.id == currentSelection) ? currentSelection : (murgs.length > 0 ? murgs[0].id : '');
+            }
+
+            function renderTable() {
+                recordsTableBody.innerHTML = '';
+                murgs.forEach(murg => {
                     const row = document.createElement('tr');
-                    
-                    // Format flight hours
-                    const wholeHours = Math.floor(pigeon.flightTimeInHours);
-                    const minutes = Math.round((pigeon.flightTimeInHours - wholeHours) * 60);
-                    const flightHoursFormatted = `${wholeHours}.${minutes.toString().padStart(2, '0')}`;
-                    
-                    totalHours += pigeon.flightTimeInHours;
-                    
+                    const isShortest = murg.id === shortestMurgId && murg.status !== 'Disqualified';
+                    row.className = isShortest ? 'excluded' : '';
+                    let durationDisplay = murg.status === 'Disqualified' ? '00:00' : formatDuration(murg.durationMinutes);
+
                     row.innerHTML = `
-                        <td>${pigeon.name}</td>
-                        <td>${pigeon.landingTime}</td>
-                        <td>${flightHoursFormatted}</td>
-                        <td class="no-print">
-                            <button class="btn-danger delete-btn" data-index="${index}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </td>
+                        <td>${murg.name} ${isShortest ? '<small>(Zamen)</small>' : ''}</td>
+                        <td>${murg.status}</td>
+                        <td>${formatTime(murg.startTime)}</td>
+                        <td>${formatTime(murg.landingTime)}</td>
+                        <td>${durationDisplay}</td>
                     `;
-                    
-                    pigeonsData.appendChild(row);
+                    recordsTableBody.appendChild(row);
                 });
-                
-                // Add event listeners to delete buttons
-                document.querySelectorAll('.delete-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const index = parseInt(this.getAttribute('data-index'));
-                        const removedPigeon = pigeons[index].name;
-                        pigeons.splice(index, 1);
-                        updateTable();
-                        showNotification(`${removedPigeon} removed successfully!`, 'success');
-                    });
-                });
-                
-                // Update summary
-                updateSummary(totalHours);
             }
-            
-            // Update summary function
-            function updateSummary(totalHours) {
-                // Format total hours
-                const totalWholeHours = Math.floor(totalHours);
-                const totalMinutes = Math.round((totalHours - totalWholeHours) * 60);
-                const totalFormatted = `${totalWholeHours}.${totalMinutes.toString().padStart(2, '0')}`;
-                
-                summaryElement.textContent = `Total Flight Hours: ${totalFormatted}`;
+
+             function renderSummary(landed, flying) {
+                totalLandedSpan.textContent = formatDuration(landed);
+                totalFlyingSpan.textContent = formatDuration(flying);
+                overallTotalSpan.textContent = formatDuration(landed + flying);
             }
-            
-            // Export to PDF function
-            function exportToPDF() {
-                // Check if there's data to export
-                if (pigeons.length === 0) {
-                    showNotification('Please add at least one pigeon before exporting', 'error');
+
+            function updateControlPanelState() {
+                const selectedId = parseInt(murgSelect.value);
+                const selectedMurg = murgs.find(m => m.id === selectedId);
+
+                if (selectedMurg) {
+                    const isFlying = selectedMurg.status === 'Flying';
+                    const isDisqualified = selectedMurg.status === 'Disqualified';
+
+                    landingTimeInput.disabled = !isFlying;
+                    landButton.disabled = !isFlying;
+                    disqualifyButton.disabled = isDisqualified;
+                } else {
+                    // No murgs (e.g., after clear before re-init)
+                    landingTimeInput.disabled = true;
+                    landButton.disabled = true;
+                    disqualifyButton.disabled = true;
+                }
+            }
+
+            // --- Event Handling ---
+
+            clearButton.addEventListener('click', clearAll);
+
+            murgSelect.addEventListener('change', updateControlPanelState);
+
+            landButton.addEventListener('click', () => {
+                const selectedId = parseInt(murgSelect.value);
+                const timeValue = landingTimeInput.value;
+                if (!selectedId) {
+                    alert("Please select a Murg.");
                     return;
                 }
-                
-                // Add current date to the header for the PDF
-                const today = new Date();
-                const dateString = today.toLocaleDateString();
-                const dateHeader = document.createElement('div');
-                dateHeader.style.textAlign = 'right';
-                dateHeader.style.marginBottom = '15px';
-                dateHeader.style.marginTop = '15px';
-                dateHeader.style.fontWeight = 'bold';
-                dateHeader.style.color = '#555';
-                dateHeader.textContent = `Date: ${dateString}`;
-                
-                const container = document.querySelector('.container');
-                container.insertBefore(dateHeader, document.querySelector('.header').nextSibling);
-                
-                // Use window.print() for PDF generation
-                window.print();
-                
-                // Remove the date header after printing
-                container.removeChild(dateHeader);
-                
-                showNotification('PDF generated successfully! Save it from your browser', 'success');
-                
-                // Offer to share the PDF (for mobile devices)
-                if (navigator.share) {
-                    showNotification('Use your browser\'s share option to share the PDF', 'success');
+                 if (!timeValue) {
+                    alert('Please enter a landing time.');
+                    return;
                 }
-            }
-            
-            // Initialize empty state
-            updateTable();
+                updateMurgStatus(selectedId, 'Landed', timeValue);
+                landingTimeInput.value = ''; // Clear input after use
+            });
+
+            disqualifyButton.addEventListener('click', () => {
+                 const selectedId = parseInt(murgSelect.value);
+                 if (!selectedId) {
+                    alert("Please select a Murg.");
+                    return;
+                }
+                 updateMurgStatus(selectedId, 'Disqualified');
+            });
+
+            // --- Initialization & Interval ---
+            initializeMurgs();
+            setInterval(updateAll, 60000); // Update every 60 seconds
         });
     </script>
-    <script>
-                container.removeChild(dateHeader);
-                
-                // Offer to share the PDF (for mobile devices)
-                if (navigator.share) {
-                    // This will only work on mobile devices with sharing capabilities
-                    // Note: This is a simplification; actual PDF sharing would require generating a file
-                    alert('Use your browser\'s share option to share the PDF');
-                }
-           
-    </script>
+
 </body>
 </html>
